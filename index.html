@@ -3,72 +3,291 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>欢迎来到我的站点</title>
+<title>My Space</title>
 <style>
+  :root {
+    --bg: #0a0a0f;
+    --card-bg: rgba(255,255,255,0.03);
+    --border: rgba(255,255,255,0.06);
+    --text: #e4e4ec;
+    --muted: #8888a0;
+    --accent: #818cf8;
+    --accent2: #c084fc;
+  }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
   body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-    color: #e0e0e0;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
   }
-  .card {
-    background: rgba(255,255,255,0.05);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 24px;
-    padding: 60px 48px;
-    text-align: center;
-    max-width: 520px;
-    width: 90%;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+
+  /* === GRID BACKGROUND === */
+  .bg-grid {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 30%, transparent 70%);
   }
-  .avatar {
-    width: 80px; height: 80px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #6e8efb, #a777e3);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 36px;
-    margin: 0 auto 24px;
+
+  /* === ORB GLOW === */
+  .orb {
+    position: fixed; border-radius: 50%; filter: blur(120px); z-index: 0; pointer-events: none;
+    opacity: 0.15;
   }
-  h1 { font-size: 28px; font-weight: 600; margin-bottom: 8px; }
-  .tagline { color: #a0a0b8; font-size: 14px; margin-bottom: 32px; }
-  .links { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .orb-1 { width: 500px; height: 500px; background: var(--accent); top: -200px; left: -100px; animation: float 8s ease-in-out infinite; }
+  .orb-2 { width: 400px; height: 400px; background: var(--accent2); bottom: -150px; right: -100px; animation: float 10s ease-in-out infinite reverse; }
+  @keyframes float {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(60px, 40px); }
+  }
+
+  /* === NAV === */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 32px;
+    backdrop-filter: blur(12px);
+    background: rgba(10,10,15,0.6);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-brand { font-weight: 700; font-size: 18px; letter-spacing: -0.5px; }
+  .nav-links { display: flex; gap: 28px; list-style: none; }
+  .nav-links a { color: var(--muted); text-decoration: none; font-size: 14px; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--text); }
+
+  /* === MAIN LAYOUT === */
+  main { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; padding: 140px 24px 80px; }
+
+  /* === HERO === */
+  .hero { text-align: center; margin-bottom: 100px; }
+  .hero-badge {
+    display: inline-block; padding: 6px 16px;
+    border: 1px solid var(--border); border-radius: 50px;
+    font-size: 12px; color: var(--muted);
+    margin-bottom: 28px;
+  }
+  .hero-badge .dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #4ade80; margin-right: 8px; box-shadow: 0 0 8px #4ade80; }
+  .hero h1 {
+    font-size: clamp(40px, 7vw, 72px);
+    font-weight: 800; letter-spacing: -2px; line-height: 1.05;
+    margin-bottom: 20px;
+  }
+  .hero h1 .gradient { background: linear-gradient(135deg, var(--accent), var(--accent2), #f472b6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .hero p { font-size: 18px; color: var(--muted); max-width: 480px; margin: 0 auto 36px; line-height: 1.6; }
+  .hero-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+  /* === BUTTONS === */
   .btn {
     display: inline-flex; align-items: center; gap: 8px;
-    padding: 10px 20px;
-    border-radius: 12px;
-    text-decoration: none;
-    font-size: 14px; font-weight: 500;
-    transition: transform 0.2s, box-shadow 0.2s;
+    padding: 12px 24px; border-radius: 12px;
+    text-decoration: none; font-size: 14px; font-weight: 600;
+    transition: all 0.25s;
   }
-  .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.25); }
-  .btn-primary { background: linear-gradient(135deg, #6e8efb, #a777e3); color: #fff; }
-  .btn-outline { border: 1px solid rgba(255,255,255,0.2); color: #c0c0d0; }
-  .btn-outline:hover { border-color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.05); }
-  .footer { margin-top: 40px; font-size: 12px; color: #606080; }
-  .status { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #4ade80; margin-right: 6px; }
+  .btn-accent {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #fff; box-shadow: 0 4px 24px rgba(129,140,248,0.3);
+  }
+  .btn-accent:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(129,140,248,0.4); }
+  .btn-ghost {
+    color: var(--text); border: 1px solid var(--border);
+  }
+  .btn-ghost:hover { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.15); }
+
+  /* === SECTION HEADERS === */
+  .section-header { margin-bottom: 40px; }
+  .section-header h2 { font-size: 28px; font-weight: 700; letter-spacing: -1px; margin-bottom: 8px; }
+  .section-header p { color: var(--muted); font-size: 14px; }
+
+  /* === FEATURES GRID === */
+  .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; margin-bottom: 100px; }
+  .feature-card {
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: 20px; padding: 28px;
+    transition: border-color 0.3s, transform 0.3s;
+  }
+  .feature-card:hover { border-color: rgba(255,255,255,0.15); transform: translateY(-4px); }
+  .feature-icon {
+    width: 44px; height: 44px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; margin-bottom: 16px;
+  }
+  .icon-purple { background: rgba(192,132,252,0.12); }
+  .icon-blue { background: rgba(129,140,248,0.12); }
+  .icon-pink { background: rgba(244,114,182,0.12); }
+  .icon-green { background: rgba(74,222,128,0.12); }
+  .feature-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
+  .feature-card p { color: var(--muted); font-size: 13px; line-height: 1.6; }
+
+  /* === STATS === */
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 100px; }
+  .stat-card {
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: 20px; padding: 32px; text-align: center;
+  }
+  .stat-number { font-size: 36px; font-weight: 800; letter-spacing: -1px; background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .stat-label { color: var(--muted); font-size: 13px; margin-top: 4px; }
+
+  /* === PROJECT CARDS === */
+  .projects { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-bottom: 100px; }
+  .project-card {
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: 20px; padding: 28px;
+    transition: border-color 0.3s;
+  }
+  .project-card:hover { border-color: rgba(255,255,255,0.15); }
+  .project-card .tag { display: inline-block; padding: 3px 10px; border-radius: 8px; font-size: 11px; font-weight: 600; margin-bottom: 16px; }
+  .tag-ts { background: rgba(49,120,198,0.2); color: #60a5fa; }
+  .tag-web { background: rgba(192,132,252,0.2); color: #c084fc; }
+  .tag-tool { background: rgba(74,222,128,0.2); color: #4ade80; }
+  .project-card h3 { font-size: 18px; margin-bottom: 6px; }
+  .project-card p { color: var(--muted); font-size: 13px; line-height: 1.6; margin-bottom: 16px; }
+  .project-card .link { color: var(--accent); text-decoration: none; font-size: 13px; font-weight: 600; }
+  .project-card .link:hover { text-decoration: underline; }
+
+  /* === FOOTER === */
+  footer {
+    text-align: center; padding: 40px 24px;
+    border-top: 1px solid var(--border);
+    color: var(--muted); font-size: 13px;
+    position: relative; z-index: 1;
+  }
+  footer a { color: var(--text); text-decoration: none; }
+  footer a:hover { color: var(--accent); }
+
+  /* === RESPONSIVE === */
+  @media (max-width: 600px) {
+    nav { padding: 12px 16px; }
+    .nav-links { display: none; }
+    .stats { grid-template-columns: 1fr; }
+    .hero { margin-bottom: 60px; }
+    .features, .projects { margin-bottom: 60px; }
+  }
 </style>
 </head>
 <body>
-<div class="card">
-  <div class="avatar">🚀</div>
-  <h1>建造中...</h1>
-  <p class="tagline">这是一个测试站点，用于演示 GitHub 上传与部署流程。</p>
-  <div class="links">
-    <a href="https://github.com" target="_blank" class="btn btn-primary">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
-      GitHub
-    </a>
-    <a href="mailto:hello@example.com" class="btn btn-outline">联系我</a>
-  </div>
-</div>
-<div class="footer">
-  <span class="status"></span> 站点运行中 &nbsp;·&nbsp; 2026
-</div>
+
+<div class="bg-grid"></div>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+
+<nav>
+  <div class="nav-brand">my.space</div>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#stats">Stats</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="https://github.com/qlftng" target="_blank">GitHub</a></li>
+  </ul>
+</nav>
+
+<main>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-badge"><span class="dot"></span>Available for work</div>
+    <h1>建造<span class="gradient">酷炫</span>的东西</h1>
+    <p>简洁、快速的现代网页——每一次点击都顺滑流畅。这只是个测试站，但也不妨碍它好看。</p>
+    <div class="hero-actions">
+      <a href="#projects" class="btn btn-accent">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m8 12 4 4 4-4"/></svg>
+        看看作品
+      </a>
+      <a href="https://github.com/qlftng/ceshi" target="_blank" class="btn btn-ghost">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        View on GitHub
+      </a>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section id="features">
+    <div class="section-header">
+      <h2>能做什么</h2>
+      <p>一些听起来很厉害但实际上就是把 div 对齐了的能力</p>
+    </div>
+    <div class="features">
+      <div class="feature-card">
+        <div class="feature-icon icon-purple">⚡</div>
+        <h3>极速加载</h3>
+        <p>零依赖纯静态，没有 5MB 的 node_modules 拖累，打开即渲染。</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon icon-blue">🎨</div>
+        <h3>现代设计</h3>
+        <p>毛玻璃、渐变、网格背景，2024 年该有的视觉元素都在这里。</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon icon-pink">📱</div>
+        <h3>响应式布局</h3>
+        <p>手机、平板、宽屏——信息密度随屏幕大小自适应。</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon icon-green">🔒</div>
+        <h3>零追踪</h3>
+        <p>没有 cookie、没有统计脚本、没有第三方请求，你的隐私就是你的。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section id="stats">
+    <div class="section-header">
+      <h2>数字说话</h2>
+      <p>虚构的统计数据看起来也很靠谱</p>
+    </div>
+    <div class="stats">
+      <div class="stat-card">
+        <div class="stat-number">100%</div>
+        <div class="stat-label">Lighthouse 评分</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">&lt;0.1s</div>
+        <div class="stat-label">首次内容渲染</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">0KB</div>
+        <div class="stat-label">JS 体积（零 JS，纯 CSS）</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="projects">
+    <div class="section-header">
+      <h2>作品集</h2>
+      <p>一些可以展示的 side projects</p>
+    </div>
+    <div class="projects">
+      <div class="project-card">
+        <span class="tag tag-web">Web</span>
+        <h3>个人主页</h3>
+        <p>就是你正在看的这个页面。深色主题 + 毛玻璃质感 + 动态光晕背景。</p>
+        <a href="#" class="link">查看源码 →</a>
+      </div>
+      <div class="project-card">
+        <span class="tag tag-ts">TypeScript</span>
+        <h3>CLI 工具箱</h3>
+        <p>一个命令行小工具集合，用来处理日常的文件批处理和格式转换。</p>
+        <a href="#" class="link">查看源码 →</a>
+      </div>
+      <div class="project-card">
+        <span class="tag tag-tool">Tool</span>
+        <h3>API Mock Server</h3>
+        <p>轻量级接口模拟服务，前端开发无需等待后端联调。</p>
+        <a href="#" class="link">查看源码 →</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  Built with &lt;3 by <a href="https://github.com/qlftng">qlftng</a> &nbsp;·&nbsp; 2026
+</footer>
+
 </body>
 </html>
